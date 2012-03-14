@@ -589,6 +589,21 @@
           }
           
           // all other <tag>s: 1-way binding
+          //  binding to allow html safe data 
+          else if ($node.data('type') == "html"){
+            if (bindData.key) {
+              self.bind('_change:'+bindData.key, function(){
+                if (self.model.get(bindData.key)) {
+                  $node.html(self.model.get(bindData.key).toString());
+                } else {
+                  $node.html('');
+                }
+              });
+            }
+            bindAttributesOneWay();
+          }
+          
+          //  binding for strictly text data
           else {
             if (bindData.key) {
               self.bind('_change:'+bindData.key, function(){
