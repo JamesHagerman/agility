@@ -10,13 +10,16 @@ Agility is an MVC library for client-side Javascript that lets you write **maint
 
 This fork adds the ability to store HTML in the data model and bind that data to the view. This is done by specifically defining the data-type of the tag as "html":
 
+``` erlang
 var message = $$({txt:'Hello World!<br /> This will go on a new line.'},'<div data-bind="txt" data-type="html"/>');
 $$.document.append(message);
+```
 
 This binding can be tested by actively updating the data in the model with new HTML content:
 
+``` erlang
 message.model.set({txt: "First line<br /><span style='color: red;'>Second line with red text in a span</span>"});
-
+```
 
 ## Core developers
 
