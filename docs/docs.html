@@ -111,7 +111,7 @@
     <div id='box-wrapper'>
 
 <!-- __INSERT_POINT__ -->
-<p class='download'><b>Version: 0.1.2 (Dec 17, 2011) </b></p>
+<p class='download'><b>Version: 0.1.3 (Sep 3, 2012) </b></p>
 
 <h1><a href="#intro">Introduction</a></h1>
 <p>Agility is a <a href="http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller">Model-View-Controller</a> (MVC) library for client-side Javascript with some specific design principles:</p>
@@ -321,7 +321,9 @@
 <p><div class="demo"></div></p>
 <p>If your <code>format</code> and/or <code>style</code> are too large, it's probably time to split your object into more Agility objects. (Unless of course you are creating a mostly static page, in which case Agility is probably not the best solution).</p>
 <h2><a href="#events">Events</a></h2>
-<p>There are two types of events in Agility: DOM events, and Agility events, and both are implicitly bound to controller functions by matching function and event names. User-defined controllers extend (i.e. are called in addition to) built-in controllers.</p>
+<p>There are two types of events in Agility: DOM events and Agility events. Both are implicitly bound to controller functions by matching function and event names.</p>
+<p>Controller functions can bind to multiple events at the same time by separating the events with a semicolon. For example, a controller function named <code>click #a; click #b</code> would fire when either click event occurred.</p>
+<p>User-defined controllers extend (i.e. are called in addition to) built-in controllers.</p>
 <h3><a href="#events-dom">DOM events</a></h3>
 <p>Usual DOM events such as <code>click</code>, <code>dblclick</code>, <code>mouseenter</code>, etc are supported through jQuery's event API. Please consult jQuery's API for a <a href="http://api.jquery.com/bind/">list of events</a> supported. </p>
 <p>When binding to controller functions, DOM events are distinguished from Agility events by the presence of a <a href="http://api.jquery.com/category/selectors/">jQuery selector</a> using the syntax:</p>
@@ -372,6 +374,19 @@
 
 
 <p><div class="demo"></div></p>
+<p><strong>Agility event bubbling</strong></p>
+<p>Like DOM events, Agility events automatically bubble to the containers of objects. However, bubbling events do not trigger event handlers on the parent objects by default. An event handler must declare that it is interested in receiving bubbled events by including the <code>child:</code> prefix in its event specification:</p>
+<div class="codehilite"><pre><span class="kd">var</span> <span class="nx">parent</span> <span class="o">=</span> <span class="nx">$$</span><span class="p">({</span>
+  <span class="nx">controller</span><span class="o">:</span> <span class="p">{</span>
+    <span class="s1">&#39;child:testevent&#39;</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+      <span class="nx">alert</span><span class="p">(</span><span class="s1">&#39;testevent fired in descendant&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</pre></div>
+
+
+<p>Events can bubble up multiple levels. Only a single <code>child:</code> prefix is required to catch an event in any descendant of an obect.</p>
 <h2><a href="#auto-proxy">Auto-proxying</a></h2>
 <p>All user-defined controllers initialized by the factory function <code>$$()</code> have their <code>this</code> auto-proxied to the owner MVC object, for quick access and consistent behavior no matter what context:</p>
 <div class="codehilite"><pre><span class="kd">var</span> <span class="nx">obj</span> <span class="o">=</span> <span class="nx">$$</span><span class="p">({</span><span class="nx">msg</span><span class="o">:</span><span class="s1">&#39;I only exist because of auto-proxying&#39;</span><span class="p">},</span> <span class="s1">&#39;&lt;div/&gt;&#39;</span><span class="p">,</span> <span class="p">{</span>
@@ -578,6 +593,15 @@
 
 <p><strong>Returns:</strong></p>
 <p>Nothing.</p>
+<h3><a href="#core-parent">.parent()</a></h3>
+<p><em>Returns the parent container to which the object has been added, or null if it has not yet been added to a container.</em></p>
+<p><strong>Syntax:</strong></p>
+<div class="codehilite"><pre><span class="p">.</span><span class="nx">parent</span><span class="p">()</span>
+</pre></div>
+
+
+<p><strong>Returns:</strong></p>
+<p>Parent Agility object.</p>
 <h3><a href="#container">&mdash;</a></h3>
 <p>The methods below are specific to the object container.</p>
 <h3><a href="#core-append">.append()</a></h3>
@@ -946,7 +970,6 @@
 <div class="codehilite"><pre>api/resource
 api/resource/123
 </pre></div>
-
 
     </div>
   </div>

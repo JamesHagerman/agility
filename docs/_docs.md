@@ -241,7 +241,11 @@ If your `format` and/or `style` are too large, it's probably time to split your 
 
 ## [Events](#events)
 
-There are two types of events in Agility: DOM events, and Agility events, and both are implicitly bound to controller functions by matching function and event names. User-defined controllers extend (i.e. are called in addition to) built-in controllers.
+There are two types of events in Agility: DOM events and Agility events. Both are implicitly bound to controller functions by matching function and event names.
+
+Controller functions can bind to multiple events at the same time by separating the events with a semicolon. For example, a controller function named `click #a; click #b` would fire when either click event occurred.
+
+User-defined controllers extend (i.e. are called in addition to) built-in controllers.
 
 ### [DOM events](#events-dom)
 
@@ -295,6 +299,21 @@ The example below defines both a DOM and a Model event handler:
     });
     $$.document.append(catcher);
 <div class="demo"></div>
+
+**Agility event bubbling**
+
+Like DOM events, Agility events automatically bubble to the containers of objects. However, bubbling events do not trigger event handlers on the parent objects by default. An event handler must declare that it is interested in receiving bubbled events by including the `child:` prefix in its event specification:
+
+    :::javascript
+    var parent = $$({
+      controller: {
+        'child:testevent': function(){
+          alert('testevent fired in descendant');
+        }
+      }
+    });
+
+Events can bubble up multiple levels. Only a single `child:` prefix is required to catch an event in any descendant of an obect.
 
 ## [Auto-proxying](#auto-proxy)
 
@@ -531,6 +550,19 @@ _Erases self view, removes self from parent container._
 **Returns:**
 
 Nothing.
+
+### [.parent()](#core-parent)
+
+_Returns the parent container to which the object has been added, or null if it has not yet been added to a container._
+
+**Syntax:**
+
+    :::javascript
+    .parent()
+
+**Returns:**
+
+Parent Agility object.
 
 
 

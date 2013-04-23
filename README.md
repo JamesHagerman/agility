@@ -23,7 +23,11 @@ message.model.set({txt: "First line<br /><span style='color: red;'>Second line w
 
 ## Core developers
 
-+ Artur Adib (@arturadib)
-+ Tristan Slominski (@tristanls)
++ [@ar2r](http://twitter.com/ar2r)
++ [@tristanls](http://twitter.com/tristanls)
 
 Core devs are contributors who have a track record of pushing awesome code to Agility. You can become one too!
+
+## Mailing list
+
++ http://groups.google.com/group/agilityjs

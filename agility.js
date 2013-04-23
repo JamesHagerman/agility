@@ -194,6 +194,7 @@
         }
         this._container.children[obj._id] = obj; // children is *not* an array; this is for simpler lookups by global object id
         this.trigger(method, [obj, selector]);
+        obj._parent = this;
         // ensures object is removed from container when destroyed:
         obj.bind('destroy', function(event, id){ 
           self._container.remove(id);
@@ -312,6 +313,8 @@
           // put the order of events back
           util.reverseEvents(this._events.data, 'pre:' + eventObj.type);
           $(this._events.data).trigger(eventObj.type, params);
+          if(this.parent())
+            this.parent().trigger((eventObj.type.match(/^child:/) ? '' : 'child:') + eventObj.type, params);
           $(this._events.data).trigger('post:' + eventObj.type, params);
         }
         return this; // for chainable calls
@@ -573,7 +576,7 @@
           }
 
           // <input type="text">, <input>, and <textarea>: 2-way binding
-          else if ($node.is('input:text, textarea')) {
+          else if ($node.is('input:text, input[type!="search"], textarea')) {
             // Model --> DOM
             self.bind('_change:'+bindData.key, function(){
               $node.val(self.model.get(bindData.key)); // this won't fire a DOM 'change' event, saving us from an infinite event loop (Model <--> DOM)
@@ -740,6 +743,9 @@
       this.trigger('destroy', this._id); // parent must listen to 'remove' event and handle container removal!
       // can't return this as it might not exist anymore!
     },
+    parent: function(){
+      return this._parent;
+    },
     
     //
     // _container shortcuts
@@ -826,6 +832,7 @@
 
     // Fresh 'own' properties (i.e. properties that are not inherited at all)
     object._id = idCounter++;
+    object._parent = null;
     object._events.data = {}; // event bindings will happen below
     object._container.children = {};
     object.view.$root = $(); // empty jQuery object
@@ -919,12 +926,23 @@
     object.view.render();
   
     // Bind all controllers to their events
-    for (var ev in object.controller) {
-      if (typeof object.controller[ev] === 'function') {
-        object.bind(ev, object.controller[ev]);
+
+    var bindEvent = function(ev, handler){
+      if (typeof handler === 'function') {
+        object.bind(ev, handler);
       }
-    }  
-  
+    };
+
+    for (var eventStr in object.controller) {
+      var events = eventStr.split(';');
+      var handler = object.controller[eventStr];
+      $.each(events, function(i, ev){
+        ev = $.trim(ev);
+        bindEvent(ev, handler);
+      });
+    }
+
+
     // Auto-triggers create event
     object.trigger('create');    
     
